@@ -69,10 +69,12 @@ func handleConn(client, server *websocket.Conn) {
 			msg, data, err := server.ReadMessage()
 			fmt.Println("S", string(data), err)
 			if err != nil {
+				client.Close()
 				break
 			}
 			err = client.WriteMessage(msg, data)
 			if err != nil {
+				client.Close()
 				break
 			}
 		}
@@ -81,11 +83,14 @@ func handleConn(client, server *websocket.Conn) {
 		msg, data, err := client.ReadMessage()
 		fmt.Println("C", string(data), err)
 		if err != nil {
+			server.Close()
 			break
 		}
 		err = server.WriteMessage(msg, data)
 		if err != nil {
+			server.Close()
 			break
 		}
 	}
+
 }
